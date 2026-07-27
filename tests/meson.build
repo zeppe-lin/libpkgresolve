@@ -16,4 +16,7 @@ if get_option('tests').enabled()
     )
     test(case[0], executable_value)
   endforeach
+  authority_contract = find_program('check_authority_contract.sh')
+  test('authority-contract', authority_contract,
+       args: [meson.project_source_root()])
 endif
