@@ -6,3 +6,5 @@
 #include <libpkgresolve/identity.h>
 #include <libpkgresolve/model.h>
 #include <libpkgresolve/request.h>
+#include <libpkgresolve/result.h>
+#include <libpkgresolve/resolver.h>

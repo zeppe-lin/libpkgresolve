@@ -5,6 +5,7 @@ if get_option('tests').enabled()
     ['identity', 'identity_test.cpp'],
     ['model', 'model_test.cpp'],
     ['request', 'request_test.cpp'],
+    ['resolver', 'resolver_test.cpp'],
     ['public-headers', 'public_headers.cpp'],
   ]
     executable_value = executable(

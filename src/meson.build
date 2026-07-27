@@ -11,6 +11,8 @@ libpkgresolve = library(
     'identity_support.cpp',
     'model.cpp',
     'request.cpp',
+    'result.cpp',
+    'resolver.cpp',
   ],
   include_directories: [public_inc, private_inc],
   dependencies: [libcrypto_dep, libpkgcatalog_dep, libpkgstate_dep],
@@ -32,6 +34,8 @@ install_headers(
   '../include/libpkgresolve/identity.h',
   '../include/libpkgresolve/model.h',
   '../include/libpkgresolve/request.h',
+  '../include/libpkgresolve/result.h',
+  '../include/libpkgresolve/resolver.h',
   subdir: 'libpkgresolve',
 )
 

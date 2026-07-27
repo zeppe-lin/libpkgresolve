@@ -5,4 +5,6 @@
 #include <libpkgresolve/libpkgresolve.h>
 #include <libpkgresolve/model.h>
 #include <libpkgresolve/request.h>
+#include <libpkgresolve/resolver.h>
+#include <libpkgresolve/result.h>
 int main() { return 0; }
