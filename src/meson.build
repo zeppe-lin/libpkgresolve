@@ -18,7 +18,7 @@ libpkgresolve = library(
   dependencies: [libcrypto_dep, libpkgcatalog_dep, libpkgstate_dep],
   install: true,
   version: meson.project_version(),
-  soversion: '0',
+  soversion: '1',
 )
 
 libpkgresolve_dep = declare_dependency(
