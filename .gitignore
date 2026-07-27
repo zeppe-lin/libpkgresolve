@@ -1,0 +1,6 @@
+/build/
+/subprojects/packagecache/
+/subprojects/libpkgcatalog/
+/subprojects/libpkgsource/
+/subprojects/libpkgstate/
+/subprojects/libpkgplan/
