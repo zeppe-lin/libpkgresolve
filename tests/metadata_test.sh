@@ -24,15 +24,15 @@ name=$(sed -n 's/^Name:[[:space:]]*//p' "$metadata")
 test "$name" = libpkgresolve ||
   fail "pkg-config module name is '$name', expected 'libpkgresolve'"
 version=$(sed -n 's/^Version:[[:space:]]*//p' "$metadata")
-test "$version" = 1.0.0 ||
-  fail "pkg-config module version is '$version', expected '1.0.0'"
+test "$version" = 2.0.0 ||
+  fail "pkg-config module version is '$version', expected '2.0.0'"
 requires=$(sed -n \
   -e 's/^Requires:[[:space:]]*//p' \
   -e 's/^Requires\.private:[[:space:]]*//p' \
   "$metadata" | tr '\n' ',')
 printf '%s\n' "$requires" |
-  grep -Eq '(^|,)[[:space:]]*libpkgcatalog[[:space:]]*>=[[:space:]]*1\.1\.0([[:space:]]*,|$)' ||
-  fail 'pkg-config metadata omits libpkgcatalog >= 1.1.0'
+  grep -Eq '(^|,)[[:space:]]*libpkgcatalog[[:space:]]*>=[[:space:]]*2\.0\.0([[:space:]]*,|$)' ||
+  fail 'pkg-config metadata omits libpkgcatalog >= 2.0.0'
 printf '%s\n' "$requires" |
   grep -Eq '(^|,)[[:space:]]*libpkgstate[[:space:]]*>=[[:space:]]*2\.1\.0([[:space:]]*,|$)' ||
   fail 'pkg-config metadata omits libpkgstate >= 2.1.0'

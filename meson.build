@@ -3,7 +3,7 @@
 project(
   'libpkgresolve',
   'cpp',
-  version: '1.0.0',
+  version: '2.0.0',
   license: 'GPL-3.0-or-later',
   meson_version: '>=1.2.0',
   default_options: [
@@ -26,7 +26,7 @@ endif
 libcrypto_dep = dependency('libcrypto', required: true, static: want_static)
 libpkgcatalog_dep = dependency(
   'libpkgcatalog',
-  version: '>=1.1.0',
+  version: '>=2.0.0',
   required: true,
   static: want_static,
   fallback: ['libpkgcatalog', 'libpkgcatalog_dep'],

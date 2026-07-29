@@ -18,7 +18,7 @@ libpkgresolve = library(
   dependencies: [libcrypto_dep, libpkgcatalog_dep, libpkgstate_dep],
   install: true,
   version: meson.project_version(),
-  soversion: '1',
+  soversion: '2',
 )
 
 libpkgresolve_dep = declare_dependency(
@@ -46,7 +46,7 @@ pkgconf.generate(
   description: 'Native deterministic package-resolution authority',
   subdirs: '.',
   requires: [
-    'libpkgcatalog >= 1.1.0',
+    'libpkgcatalog >= 2.0.0',
     'libpkgstate >= 2.1.0',
   ],
   requires_private: ['libcrypto'],
