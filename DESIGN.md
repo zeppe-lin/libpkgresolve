@@ -110,3 +110,10 @@ Version 1 has no:
 - planner projection;
 - filesystem, process, network, or database access;
 - migration or compatibility frontend.
+
+## Version 2 ABI boundary
+
+`selected_package` retains `pkgcatalog::catalog_candidate` by value.  The
+catalog ABI rebuild for `libpkgsource.so.2` therefore propagates through the
+public resolution-result ABI.  Version 2 advances the resolver SONAME while
+preserving selection, witness, closure, and identity semantics.

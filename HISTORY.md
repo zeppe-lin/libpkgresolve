@@ -1,5 +1,14 @@
 # History
 
+## libpkgresolve 2.0.0
+
+ABI rebuild for libpkgcatalog 2 and libpkgsource 2.
+
+- Rebuilt catalog-candidate-retaining selection values against `libpkgcatalog.so.2`.
+- Raised the catalog dependency floor to `libpkgcatalog >= 2.0.0`.
+- Advanced `libpkgresolve` to SONAME 2.
+- Preserved resolution semantics, authority rules, and identity domains.
+
 ## libpkgresolve 1.0.0
 
 Initial native package-resolution authority.
