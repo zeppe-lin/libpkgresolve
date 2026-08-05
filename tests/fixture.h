@@ -93,9 +93,12 @@ inline pkgsource::source_snapshot source(
 
   std::vector<pkgsource::lifecycle_program> lifecycle_programs;
   std::vector<pkgsource::lifecycle_action> actions;
+  bool has_check_requirements = false;
   for (const auto& value : requirements) {
     if (value.scope().kind() == pkgsource::requirement_scope_kind::lifecycle)
       actions.push_back(*value.scope().action());
+    if (value.scope().kind() == pkgsource::requirement_scope_kind::check)
+      has_check_requirements = true;
   }
   std::sort(actions.begin(), actions.end());
   actions.erase(std::unique(actions.begin(), actions.end()), actions.end());
@@ -104,6 +107,11 @@ inline pkgsource::source_snapshot source(
         action,
         pkgsource::program(pkgsource::program_language::posix_shell,
                            "true\n"));
+
+  std::optional<pkgsource::program> check_program;
+  if (has_check_requirements)
+    check_program.emplace(pkgsource::program_language::posix_shell,
+                          "true\n");
 
   pkgsource::recipe_declaration declaration(
       pkgsource::package_release(
@@ -117,7 +125,7 @@ inline pkgsource::source_snapshot source(
       std::move(requirements), std::move(lifecycle_programs),
       pkgsource::architecture_requirements(
           std::move(build), std::move(target)),
-      at("recipe", 1));
+      at("recipe", 1), std::move(check_program));
   return pkgsource::seal_source(
       pkgsource::source_origin(name + "/recipe.yml"),
       std::move(declaration), profile_catalog);
