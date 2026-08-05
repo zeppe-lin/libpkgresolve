@@ -120,7 +120,6 @@ inline pkgsource::source_snapshot source(
       at("recipe", 1));
   return pkgsource::seal_source(
       pkgsource::source_origin(name + "/recipe.yml"),
-      pkgsource::source_syntax::recipe_yaml_v1,
       std::move(declaration), profile_catalog);
 }
 
@@ -277,8 +276,6 @@ inline pkgstate::installed_package installed_package(
               pkgstate::architecture_reference(selected_build.name()),
               pkgstate::architecture_reference(selected_target.name())),
           {},
-          imported_identity<pkgstate::source_recipe_identity>(
-              recipe.identity().hex()),
           imported_identity<pkgstate::source_snapshot_identity>(
               source.identity().hex()));
 
@@ -287,7 +284,6 @@ inline pkgstate::installed_package installed_package(
       pkgstate::build_provenance(
           source_record.identity(),
           state_identity<pkgstate::build_request_identity>(seed),
-          state_identity<pkgstate::source_material_set_identity>(seed + 1),
           state_identity<pkgstate::build_input_set_identity>(seed + 2),
           state_identity<pkgstate::environment_policy_identity>(seed + 3),
           state_identity<pkgstate::build_policy_identity>(seed + 4),
@@ -297,8 +293,9 @@ inline pkgstate::installed_package installed_package(
           state_identity<pkgstate::artifact_content_identity>(seed + 8),
           state_identity<pkgstate::artifact_binding_identity>(seed + 9),
           state_identity<pkgstate::execution_evidence_identity>(seed + 10),
-          state_identity<pkgstate::artifact_image_identity>(seed + 11),
-          state_identity<pkgstate::artifact_inspection_identity>(seed + 12)));
+          state_identity<pkgstate::build_image_identity>(seed + 11),
+          state_identity<pkgstate::artifact_image_identity>(seed + 12),
+          state_identity<pkgstate::artifact_inspection_identity>(seed + 13)));
   return pkgstate::installed_package::make(
       pkgstate::installation_receipt::make(
           std::move(control), std::move(binding), {},
