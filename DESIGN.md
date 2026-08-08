@@ -99,6 +99,22 @@ Version 1 defines separate SHA-256 domains for:
 Result identity binds the exact request, normalized selections, edges, goal
 closures, and selection reasons.
 
+## Result closure invariant
+
+`resolve()` never emits dangling graph references. Every requirement-edge
+issuer and required selection, every goal member and goal selection, every goal
+edge, and every selection-reason selection or issuer names a value retained in
+the same `resolution_result`. Selection, edge, goal-selection, goal-edge, and
+reason collections are normalized before the complete result identity is
+sealed.
+
+This is a producer guarantee, not permission for downstream callers to trust an
+arbitrarily reconstructed value. A boundary that accepts a resolution result
+from foreign persistence or another authority must still fail closed if that
+reconstruction is inconsistent. The resolver does not make transaction or
+planner admission policy by turning its public value constructors into another
+orchestration boundary.
+
 ## Deliberate omissions
 
 Version 1 has no:

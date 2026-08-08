@@ -11,7 +11,6 @@
 #include <vector>
 
 #include <libpkgcatalog/libpkgcatalog.h>
-#include <libpkgresolve/libpkgresolve.h>
 #include <libpkgstate/libpkgstate.h>
 
 namespace fixture {
@@ -245,7 +244,9 @@ inline pkgstate::installed_package installed_package(
     pkgsource::architecture_reference selected_build =
         pkgsource::architecture_reference("x86_64"),
     pkgsource::architecture_reference selected_target =
-        pkgsource::architecture_reference("x86_64"))
+        pkgsource::architecture_reference("x86_64"),
+    std::optional<pkgstate::package_release_identity> release_identity =
+        std::nullopt)
 {
   const auto& recipe = source.recipe();
   std::vector<pkgstate::package_requirement> runtime;
@@ -268,8 +269,9 @@ inline pkgstate::installed_package installed_package(
     declared_target.emplace_back(value.name());
 
   pkgstate::package_release release(
-      imported_identity<pkgstate::package_release_identity>(
-          recipe.release().identity().hex()),
+      release_identity.value_or(
+          imported_identity<pkgstate::package_release_identity>(
+              recipe.release().identity().hex())),
       pkgstate::package_reference(recipe.release().package().name()),
       recipe.release().version(), recipe.release().release());
   pkgstate::package_source_record source_record =
@@ -323,26 +325,5 @@ inline pkgstate::snapshot state(
   return pkgstate::snapshot::make(std::move(binding), std::move(packages));
 }
 
-inline pkgresolve::resolution_goal package_goal(
-    pkgsource::requirement_scope scope, std::string package,
-    std::string origin = "test")
-{
-  return pkgresolve::resolution_goal(
-      std::move(scope),
-      pkgsource::requirement_subject(
-          pkgsource::package_reference(std::move(package))),
-      std::move(origin));
-}
-
-inline pkgresolve::resolution_goal profile_goal(
-    pkgsource::requirement_scope scope, std::string profile,
-    std::string origin = "test")
-{
-  return pkgresolve::resolution_goal(
-      std::move(scope),
-      pkgsource::requirement_subject(
-          pkgsource::profile_reference(std::move(profile))),
-      std::move(origin));
-}
 
 } // namespace fixture

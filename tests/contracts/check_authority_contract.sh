@@ -12,3 +12,4 @@ done
 grep -q 'does not plan' "$root/DESIGN.md" || fail 'planning boundary missing'
 grep -q 'effective catalog candidates only' "$root/DESIGN.md" || fail 'candidate boundary missing'
 grep -q 'build, check, run, and lifecycle' "$root/DESIGN.md" || fail 'typed closure boundary missing'
+grep -q 'never emits dangling graph references' "$root/DESIGN.md" || fail 'result closure boundary missing'
