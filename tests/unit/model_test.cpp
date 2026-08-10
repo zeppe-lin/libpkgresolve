@@ -32,6 +32,11 @@ int main()
              == "check-requirement");
   TEST_CHECK(to_string(selection_reason_kind::lifecycle_requirement)
              == "lifecycle-requirement");
+  TEST_CHECK(to_string(static_cast<resolution_environment>(255)) == "unknown");
+  TEST_CHECK(to_string(static_cast<installed_preference>(255)) == "unknown");
+  TEST_CHECK(to_string(static_cast<selection_authority_kind>(255)) == "unknown");
+  TEST_CHECK(to_string(static_cast<requirement_authority_kind>(255)) == "unknown");
+  TEST_CHECK(to_string(static_cast<selection_reason_kind>(255)) == "unknown");
 
   architecture_context context(
       pkgsource::architecture_reference("x86_64"),
@@ -49,12 +54,16 @@ int main()
              == "x86_64");
   TEST_CHECK(context.selected_target(resolution_environment::target).name()
              == "aarch64");
+  TEST_THROWS(error_code::invalid_request,
+      context.selected_target(static_cast<resolution_environment>(255)));
 
   resolution_policy retain;
   resolution_policy prefer(installed_preference::prefer_catalog);
   TEST_CHECK(retain.preference() == installed_preference::retain_compatible);
   TEST_CHECK(retain != prefer);
   TEST_CHECK(retain < prefer);
+  TEST_THROWS(error_code::invalid_request,
+      resolution_policy(static_cast<installed_preference>(255)));
 
   const resolution_goal first(
       pkgsource::requirement_scope::run(),

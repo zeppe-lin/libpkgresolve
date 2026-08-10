@@ -64,7 +64,12 @@ const pkgsource::architecture_reference& architecture_context::target() const no
 pkgsource::architecture_reference architecture_context::selected_target(
     resolution_environment environment) const
 {
-  return environment == resolution_environment::build ? build_ : target_;
+  switch (environment) {
+  case resolution_environment::build: return build_;
+  case resolution_environment::target: return target_;
+  }
+  throw error(error_code::invalid_request,
+              "unsupported resolution environment");
 }
 bool operator==(const architecture_context& lhs,
                 const architecture_context& rhs) noexcept
@@ -76,7 +81,16 @@ bool operator<(const architecture_context& lhs,
 { return std::tie(lhs.build_, lhs.target_) < std::tie(rhs.build_, rhs.target_); }
 
 resolution_policy::resolution_policy(installed_preference preference)
-    : preference_(preference) {}
+    : preference_(preference)
+{
+  switch (preference_) {
+  case installed_preference::retain_compatible:
+  case installed_preference::prefer_catalog:
+    return;
+  }
+  throw error(error_code::invalid_request,
+              "unsupported installed preference");
+}
 installed_preference resolution_policy::preference() const noexcept
 { return preference_; }
 bool operator==(const resolution_policy& lhs,

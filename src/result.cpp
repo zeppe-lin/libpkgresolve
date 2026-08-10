@@ -9,6 +9,32 @@
 #include <utility>
 
 namespace pkgresolve {
+namespace {
+bool supported(resolution_environment value) noexcept
+{
+  switch (value) {
+  case resolution_environment::build:
+  case resolution_environment::target:
+    return true;
+  }
+  return false;
+}
+
+bool supported(selection_reason_kind value) noexcept
+{
+  switch (value) {
+  case selection_reason_kind::direct_goal:
+  case selection_reason_kind::profile_goal:
+  case selection_reason_kind::runtime_requirement:
+  case selection_reason_kind::build_requirement:
+  case selection_reason_kind::check_requirement:
+  case selection_reason_kind::lifecycle_requirement:
+    return true;
+  }
+  return false;
+}
+} // namespace
+
 selected_package::selected_package(
     resolution_environment environment,
     architecture_context selected_architectures,
@@ -19,7 +45,12 @@ selected_package::selected_package(
     : environment_(environment),
       selected_architectures_(std::move(selected_architectures)),
       authority_(std::move(authority)), release_(std::move(release)),
-      source_snapshot_(std::move(source_snapshot)), identity_(std::move(identity)) {}
+      source_snapshot_(std::move(source_snapshot)), identity_(std::move(identity))
+{
+  if (!supported(environment_))
+    throw error(error_code::inconsistent_authority,
+                "selected package has unsupported environment");
+}
 resolution_environment selected_package::environment() const noexcept
 { return environment_; }
 selection_authority_kind selected_package::authority_kind() const noexcept
@@ -101,7 +132,12 @@ requirement_edge::requirement_edge(
     requirement_edge_identity identity)
     : issuer_(std::move(issuer)), required_(std::move(required)),
       scope_(std::move(scope)), environment_(environment),
-      witness_(std::move(witness)), identity_(std::move(identity)) {}
+      witness_(std::move(witness)), identity_(std::move(identity))
+{
+  if (!supported(environment_))
+    throw error(error_code::inconsistent_authority,
+                "requirement edge has unsupported environment");
+}
 const package_selection_identity& requirement_edge::issuer() const noexcept
 { return issuer_; }
 const package_selection_identity& requirement_edge::required() const noexcept
@@ -167,7 +203,12 @@ selection_reason::selection_reason(
     std::optional<pkgsource::profile_identity> profile_identity)
     : selection_(std::move(selection)), kind_(kind), scope_(std::move(scope)),
       issuer_(std::move(issuer)), profile_(std::move(profile)),
-      profile_identity_(std::move(profile_identity)) {}
+      profile_identity_(std::move(profile_identity))
+{
+  if (!supported(kind_))
+    throw error(error_code::inconsistent_authority,
+                "selection reason has unsupported kind");
+}
 const package_selection_identity& selection_reason::selection() const noexcept
 { return selection_; }
 selection_reason_kind selection_reason::kind() const noexcept { return kind_; }

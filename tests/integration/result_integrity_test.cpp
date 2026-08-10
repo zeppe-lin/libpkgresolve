@@ -83,6 +83,27 @@ int main()
       TEST_CHECK(edges.count(edge.hex()) == 1);
   }
 
+  const auto& selected = first.selections().front();
+  TEST_THROWS(error_code::inconsistent_authority,
+      selected_package(
+          static_cast<resolution_environment>(255),
+          selected.architectures(), selected.authority(), selected.release(),
+          selected.source_snapshot(), selected.identity()));
+
+  const auto& edge = first.edges().front();
+  TEST_THROWS(error_code::inconsistent_authority,
+      requirement_edge(
+          edge.issuer(), edge.required(), edge.scope(),
+          static_cast<resolution_environment>(255), edge.witness(),
+          edge.identity()));
+
+  const auto& reason = first.reasons().front();
+  TEST_THROWS(error_code::inconsistent_authority,
+      selection_reason(
+          reason.selection(), static_cast<selection_reason_kind>(255),
+          reason.scope(), reason.issuer(), reason.profile(),
+          reason.profile_identity()));
+
   TEST_CHECK(first.goals().size() == first.request().goals().size());
   for (std::size_t index = 0; index < first.goals().size(); ++index)
     TEST_CHECK(first.goals()[index].goal() == first.request().goals()[index]);
