@@ -26,18 +26,40 @@ test "$name" = libpkgresolve ||
 version=$(sed -n 's/^Version:[[:space:]]*//p' "$metadata")
 test "$version" = 3.0.0 ||
   fail "pkg-config module version is '$version', expected '3.0.0'"
-requires=$(sed -n \
-  -e 's/^Requires:[[:space:]]*//p' \
-  -e 's/^Requires\.private:[[:space:]]*//p' \
-  "$metadata" | tr '\n' ',')
+normalize_requirements()
+{
+  sed \
+    -e 's/^[[:space:]]*//' \
+    -e 's/[[:space:]]*$//' \
+    -e 's/[[:space:]][[:space:]]*/ /g' \
+    -e 's/ *\([<>]=\|[<>=]\) */ \1 /' \
+    -e '/^$/d'
+}
+requires=$(sed -n 's/^Requires:[[:space:]]*//p' "$metadata" |
+  tr ',' '\n' | normalize_requirements)
+expected_requires='libpkgsource >= 3.0.1
+libpkgsource < 4.0.0
+libpkgcatalog >= 3.0.1
+libpkgcatalog < 4.0.0
+libpkgstate >= 3.1.0
+libpkgstate < 4.0.0'
 for requirement in \
   'libpkgsource >= 3.0.1' 'libpkgsource < 4.0.0' \
   'libpkgcatalog >= 3.0.1' 'libpkgcatalog < 4.0.0' \
   'libpkgstate >= 3.1.0' 'libpkgstate < 4.0.0'
 do
-  printf '%s\n' "$requires" | grep -F "$requirement" >/dev/null ||
-    fail "pkg-config metadata omits $requirement"
+  count=$(printf '%s\n' "$requires" | grep -Fxc "$requirement" || true)
+  test "$count" -eq 1 ||
+    fail "pkg-config metadata contains $count copies of '$requirement', expected exactly one"
 done
+actual_sorted=$(printf '%s\n' "$requires" | LC_ALL=C sort)
+expected_sorted=$(printf '%s\n' "$expected_requires" | LC_ALL=C sort)
+test "$actual_sorted" = "$expected_sorted" ||
+  fail 'pkg-config public requirements are not the exact resolver dependency intervals'
+requires_private=$(sed -n 's/^Requires\.private:[[:space:]]*//p' "$metadata" |
+  tr ',' '\n' | normalize_requirements)
+test "$requires_private" = libcrypto ||
+  fail "pkg-config private requirements are '$requires_private', expected exactly 'libcrypto'"
 libs=$(sed -n 's/^Libs:[[:space:]]*//p' "$metadata")
 printf ' %s \n' "$libs" | grep -F ' -lpkgresolve ' >/dev/null ||
   fail 'pkg-config metadata omits libpkgresolve'
