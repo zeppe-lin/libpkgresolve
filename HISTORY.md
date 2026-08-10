@@ -1,5 +1,27 @@
 # History
 
+## libpkgresolve 3.0.0
+
+Current source/catalog/state authority ABI rebuild and qualification closure.
+
+- Rebuilt public request and selection values against `libpkgsource.so.3`,
+  `libpkgcatalog.so.3`, and `libpkgstate.so.4`.
+- Advanced `libpkgresolve` to SONAME 3 because `resolution_request`,
+  `selection_authority`, and `selected_package` retain foreign authority values
+  by value and their generation-2 layouts are not ABI-compatible with the
+  current owners.
+- Made the direct `libpkgsource` dependency explicit instead of inheriting a
+  public source dependency accidentally through `libpkgcatalog`.
+- Requires `libpkgsource >= 3.0.1, < 4.0.0`, `libpkgcatalog >= 3.0.1, < 4.0.0`,
+  and `libpkgstate >= 3.1.0, < 4.0.0`.
+- Refuses unsupported resolver vocabulary at public admission boundaries rather
+  than stringifying it into sealed authority.
+- Freezes one reviewed ELF surface, anchors public error RTTI, and qualifies
+  the installed shared/static pkg-config product under GCC, Clang, and
+  ASan/UBSan.
+- Preserves resolver identity domains and dependency-selection semantics; this
+  is an ABI-owner correction, not a resolution-policy redesign.
+
 ## libpkgresolve 2.0.0
 
 ABI rebuild for libpkgcatalog 2 and libpkgsource 2.

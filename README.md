@@ -36,3 +36,7 @@ meson test -C build --print-errorlogs
 
 Shared and static libraries use separate build directories. Set
 `-Ddefault_library=static -Dlink_mode=static` for a static build.
+
+Release qualification additionally executes installed shared/static consumers,
+exact ELF ABI and dependency-generation checks, GCC/Clang builds, and
+ASan/UBSan. See `TESTING.md`.

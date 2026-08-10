@@ -24,18 +24,20 @@ name=$(sed -n 's/^Name:[[:space:]]*//p' "$metadata")
 test "$name" = libpkgresolve ||
   fail "pkg-config module name is '$name', expected 'libpkgresolve'"
 version=$(sed -n 's/^Version:[[:space:]]*//p' "$metadata")
-test "$version" = 2.0.0 ||
-  fail "pkg-config module version is '$version', expected '2.0.0'"
+test "$version" = 3.0.0 ||
+  fail "pkg-config module version is '$version', expected '3.0.0'"
 requires=$(sed -n \
   -e 's/^Requires:[[:space:]]*//p' \
   -e 's/^Requires\.private:[[:space:]]*//p' \
   "$metadata" | tr '\n' ',')
-printf '%s\n' "$requires" |
-  grep -Eq '(^|,)[[:space:]]*libpkgcatalog[[:space:]]*>=[[:space:]]*2\.0\.0([[:space:]]*,|$)' ||
-  fail 'pkg-config metadata omits libpkgcatalog >= 2.0.0'
-printf '%s\n' "$requires" |
-  grep -Eq '(^|,)[[:space:]]*libpkgstate[[:space:]]*>=[[:space:]]*2\.1\.0([[:space:]]*,|$)' ||
-  fail 'pkg-config metadata omits libpkgstate >= 2.1.0'
+for requirement in \
+  'libpkgsource >= 3.0.1' 'libpkgsource < 4.0.0' \
+  'libpkgcatalog >= 3.0.1' 'libpkgcatalog < 4.0.0' \
+  'libpkgstate >= 3.1.0' 'libpkgstate < 4.0.0'
+do
+  printf '%s\n' "$requires" | grep -F "$requirement" >/dev/null ||
+    fail "pkg-config metadata omits $requirement"
+done
 libs=$(sed -n 's/^Libs:[[:space:]]*//p' "$metadata")
 printf ' %s \n' "$libs" | grep -F ' -lpkgresolve ' >/dev/null ||
   fail 'pkg-config metadata omits libpkgresolve'

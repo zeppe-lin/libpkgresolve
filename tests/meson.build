@@ -91,4 +91,46 @@ if get_option('tests').enabled()
     args: [meson.project_source_root()],
     suite: 'contract',
   )
+
+  abi_layout = executable(
+    'abi-layout-test',
+    'contracts/abi_layout_test.cpp',
+    dependencies: libpkgresolve_dep,
+    install: false,
+  )
+  test('abi-layout', abi_layout, suite: 'contract')
+
+  abi_contract = find_program('contracts/check_abi_contract.sh')
+  test(
+    'abi-contract',
+    abi_contract,
+    args: [meson.project_source_root()],
+    suite: 'contract',
+  )
+
+  ci_contract = find_program('contracts/check_ci_contract.sh')
+  test(
+    'ci-contract',
+    ci_contract,
+    args: [meson.project_source_root()],
+    suite: 'contract',
+  )
+
+  if library_kind == 'shared'
+    abi_surface = find_program('contracts/check_abi_surface.sh')
+    test(
+      'abi-surface',
+      abi_surface,
+      args: [libpkgresolve.full_path(),
+             meson.project_source_root() / 'abi/libpkgresolve.exports'],
+      suite: 'contract',
+    )
+    dependency_abi = find_program('contracts/check_dependency_abi.sh')
+    test(
+      'dependency-abi',
+      dependency_abi,
+      args: [libpkgresolve.full_path()],
+      suite: 'contract',
+    )
+  endif
 endif

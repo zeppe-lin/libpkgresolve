@@ -5,7 +5,7 @@ set -eu
 root=${1:?source root required}
 meson=$root/tests/meson.build
 
-for directory in unit integration fixtures support contracts; do
+for directory in unit integration fixtures support installed contracts; do
   [ -d "$root/tests/$directory" ] || {
     echo "test-layout: missing qualification role: $directory" >&2
     exit 1
@@ -33,7 +33,11 @@ for path in \
   integration/architecture_test.cpp \
   integration/result_integrity_test.cpp \
   integration/failure_test.cpp \
-  contracts/check_test_layout.sh; do
+  installed/consumer.cpp \
+  contracts/abi_layout_test.cpp \
+  contracts/check_test_layout.sh \
+  contracts/check_abi_contract.sh \
+  contracts/check_ci_contract.sh; do
   grep -F "$path" "$meson" "$root/TESTING.md" >/dev/null || {
     echo "test-layout: qualification wiring omits $path" >&2
     exit 1

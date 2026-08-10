@@ -133,3 +133,18 @@ Version 1 has no:
 catalog ABI rebuild for `libpkgsource.so.2` therefore propagates through the
 public resolution-result ABI.  Version 2 advances the resolver SONAME while
 preserving selection, witness, closure, and identity semantics.
+
+## Version 3 ABI boundary
+
+The current authority graph changes both alternatives retained by
+`selection_authority`: catalog candidates are rebuilt for source generation 3,
+and installed packages are rebuilt for state generation 4. `resolution_request`
+also retains the current catalog and state snapshots by value.
+
+The resolver therefore advances to `libpkgresolve.so.3` and binds explicit
+source, catalog, and state provider generations. An unchanged outer
+`std::variant` or enclosing-class size is not accepted as ABI evidence; the
+layout and semantics of every active by-value alternative are part of the
+resolver ABI. Source is a direct public dependency because resolver headers and
+values name source-owned types directly rather than inheriting that dependency
+accidentally through the catalog.
