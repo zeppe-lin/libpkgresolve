@@ -58,15 +58,26 @@ cross build.
 
 The resolver retains build, check, run, and lifecycle scopes as separate native closures. They are never collapsed.
 
-- A run goal follows runtime requirements recursively.
-- A build goal follows build requirements; each selected build input then
-  contributes its runtime closure in the build environment.
-- A check goal follows check requirements and their runtime closures.
+- Every selected catalog candidate contributes the build closure required to
+  realize that candidate. Catalog construction requirements recurse in the
+  build environment; an installed selection terminates that construction
+  closure because no source realization is required for the installed package.
+- A run goal follows runtime requirements recursively. Runtime requirements may
+  select catalog candidates, whose construction closure is retained separately
+  from the runtime edges.
+- A build goal follows build requirements; each selected build input contributes
+  its construction closure when catalog-backed and its runtime closure in the
+  build environment.
+- A check goal retains the checked candidate's construction closure, follows
+  check requirements, and retains each selected check input's catalog
+  construction closure and runtime closure.
 - A lifecycle goal follows requirements bound to exactly one lifecycle action
-  and then their runtime closures.
+  and then their runtime closures; catalog candidates selected anywhere in that
+  closure retain the build closure needed to realize them.
 
 Dependency cycles are represented as finite graph cycles. The resolver neither
-orders them nor claims they are executable.
+orders them nor claims they are executable. Construction and lifecycle cycle
+admission remains a downstream transaction responsibility.
 
 ## Witnesses and reasons
 

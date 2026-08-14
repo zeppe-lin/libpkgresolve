@@ -459,6 +459,7 @@ private:
                             selection_reason_kind::direct_goal,
                             goal.scope(), std::nullopt, std::nullopt,
                             std::nullopt);
+      expand_construction(selection);
       expand(selection, goal.scope());
     } else {
       const pkgsource::sealed_profile* profile = nullptr;
@@ -480,12 +481,20 @@ private:
                               selection_reason_kind::profile_goal,
                               goal.scope(), std::nullopt, profile->name(),
                               profile->identity());
+        expand_construction(selection);
         expand(selection, goal.scope());
       }
     }
     std::sort(members.begin(), members.end());
     members.erase(std::unique(members.begin(), members.end()), members.end());
     return members;
+  }
+
+  void expand_construction(selected_package& selection)
+  {
+    if (selection.candidate() == nullptr)
+      return;
+    expand(selection, pkgsource::requirement_scope::build());
   }
 
   void expand(selected_package& issuer,
@@ -522,6 +531,7 @@ private:
             candidate->source().identity(), requirement.origins());
         add_edge(issuer, required, requirement.scope(), environment,
                  std::move(witness));
+        expand_construction(required);
         expand(required, pkgsource::requirement_scope::run());
       }
       return;
@@ -549,6 +559,7 @@ private:
       requirement_witness witness = requirement_witness::installed(
           installed->identity(), requirement.origins());
       add_edge(issuer, required, scope, environment, std::move(witness));
+      expand_construction(required);
       expand(required, pkgsource::requirement_scope::run());
     }
   }

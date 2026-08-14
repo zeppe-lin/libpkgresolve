@@ -13,24 +13,29 @@ int main()
                            "lib", "requirements.run[0]"),
   });
   auto lib = fixture::source(profiles, "lib", {
+      fixture::requirement(pkgsource::requirement_scope::build(),
+                           "generator", "requirements.build[0]"),
       fixture::requirement(pkgsource::requirement_scope::run(),
                            "runtime", "requirements.run[0]"),
   });
+  auto generator = fixture::source(profiles, "generator");
   auto runtime = fixture::source(profiles, "runtime");
-  auto catalog = fixture::catalog(profiles, {app, lib, runtime});
+  auto catalog = fixture::catalog(profiles, {app, lib, generator, runtime});
 
   const auto result = fixture::resolution(
       catalog, fixture::empty_state(),
       {fixture::package_goal(pkgsource::requirement_scope::run(), "app")});
 
-  TEST_CHECK(result.selections().size() == 3);
-  TEST_CHECK(result.edges().size() == 2);
+  TEST_CHECK(result.selections().size() == 4);
+  TEST_CHECK(result.edges().size() == 3);
   TEST_CHECK(result.goals().size() == 1);
   TEST_CHECK(result.goals().front().members().size() == 1);
-  TEST_CHECK(result.goals().front().selections().size() == 3);
-  TEST_CHECK(result.goals().front().edges().size() == 2);
+  TEST_CHECK(result.goals().front().selections().size() == 4);
+  TEST_CHECK(result.goals().front().edges().size() == 3);
   TEST_CHECK(result.edges_for_scope(pkgsource::requirement_scope::run()).size()
              == 2);
+  TEST_CHECK(result.edges_for_scope(pkgsource::requirement_scope::build()).size()
+             == 1);
 
   const auto* selected_app = result.find(
       pkgsource::package_reference("app"), resolution_environment::target,
@@ -38,8 +43,12 @@ int main()
   const auto* selected_lib = result.find(
       pkgsource::package_reference("lib"), resolution_environment::target,
       selection_authority_kind::catalog_candidate);
+  const auto* selected_generator = result.find(
+      pkgsource::package_reference("generator"), resolution_environment::build,
+      selection_authority_kind::catalog_candidate);
   TEST_CHECK(selected_app != nullptr);
   TEST_CHECK(selected_lib != nullptr);
+  TEST_CHECK(selected_generator != nullptr);
   TEST_CHECK(result.reasons_for(selected_app->identity()).size() == 1);
   TEST_CHECK(result.reasons_for(selected_lib->identity()).size() == 1);
 

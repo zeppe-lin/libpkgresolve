@@ -14,20 +14,26 @@ int main()
                            "tester", "requirements.check[0]"),
   });
   auto compiler = fixture::source(profiles, "compiler", {
+      fixture::requirement(pkgsource::requirement_scope::build(),
+                           "generator", "requirements.build[0]"),
       fixture::requirement(pkgsource::requirement_scope::run(),
                            "hostlib", "requirements.run[0]"),
   });
+  auto generator = fixture::source(profiles, "generator");
   auto make = fixture::source(profiles, "make");
   auto hostlib = fixture::source(profiles, "hostlib");
-  auto tester = fixture::source(profiles, "tester");
+  auto tester = fixture::source(profiles, "tester", {
+      fixture::requirement(pkgsource::requirement_scope::build(),
+                           "generator", "requirements.build[0]"),
+  });
   auto catalog = fixture::catalog(
-      profiles, {app, compiler, make, hostlib, tester});
+      profiles, {app, compiler, generator, make, hostlib, tester});
 
   const auto build = fixture::resolution(
       catalog, fixture::empty_state(),
       {fixture::package_goal(pkgsource::requirement_scope::build(), "app")});
   TEST_CHECK(build.edges_for_scope(pkgsource::requirement_scope::build()).size()
-             == 2);
+             == 3);
   TEST_CHECK(build.find(pkgsource::package_reference("compiler"),
       resolution_environment::build,
       selection_authority_kind::catalog_candidate) != nullptr);
@@ -35,6 +41,9 @@ int main()
       resolution_environment::build,
       selection_authority_kind::catalog_candidate) != nullptr);
   TEST_CHECK(build.find(pkgsource::package_reference("hostlib"),
+      resolution_environment::build,
+      selection_authority_kind::catalog_candidate) != nullptr);
+  TEST_CHECK(build.find(pkgsource::package_reference("generator"),
       resolution_environment::build,
       selection_authority_kind::catalog_candidate) != nullptr);
   TEST_CHECK(build.edges_for_scope(pkgsource::requirement_scope::check()).empty());
@@ -47,8 +56,38 @@ int main()
   TEST_CHECK(check.find(pkgsource::package_reference("tester"),
       resolution_environment::build,
       selection_authority_kind::catalog_candidate) != nullptr);
+  TEST_CHECK(check.find(pkgsource::package_reference("generator"),
+      resolution_environment::build,
+      selection_authority_kind::catalog_candidate) != nullptr);
+  TEST_CHECK(check.edges_for_scope(pkgsource::requirement_scope::build()).size()
+             == 4);
+  TEST_CHECK(check.find(pkgsource::package_reference("compiler"),
+      resolution_environment::build,
+      selection_authority_kind::catalog_candidate) != nullptr);
+  TEST_CHECK(check.find(pkgsource::package_reference("make"),
+      resolution_environment::build,
+      selection_authority_kind::catalog_candidate) != nullptr);
+  TEST_CHECK(check.find(pkgsource::package_reference("hostlib"),
+      resolution_environment::build,
+      selection_authority_kind::catalog_candidate) != nullptr);
   TEST_CHECK(check.find(pkgsource::package_reference("app"),
       resolution_environment::target,
+      selection_authority_kind::catalog_candidate) != nullptr);
+
+  const auto binding = fixture::target();
+  const auto installed_compiler = fixture::installed_package(
+      compiler, binding, 70);
+  const auto installed_build = fixture::resolution(
+      catalog, fixture::state({installed_compiler}, binding),
+      {fixture::package_goal(pkgsource::requirement_scope::build(), "app")});
+  TEST_CHECK(installed_build.find(pkgsource::package_reference("compiler"),
+      resolution_environment::build,
+      selection_authority_kind::installed_package) != nullptr);
+  TEST_CHECK(installed_build.find(pkgsource::package_reference("generator"),
+      resolution_environment::build,
+      selection_authority_kind::catalog_candidate) == nullptr);
+  TEST_CHECK(installed_build.find(pkgsource::package_reference("hostlib"),
+      resolution_environment::build,
       selection_authority_kind::catalog_candidate) != nullptr);
   return 0;
 }
