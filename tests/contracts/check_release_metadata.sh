@@ -26,7 +26,7 @@ check_dependency_range()
   printf '%s\n' "$block" | grep -F "  version: $interval," >/dev/null ||
     fail "$module dependency interval is not $interval"
 }
-check_dependency_range libpkgsource_dep libpkgsource "['>=3.0.1', '<4.0.0']"
+check_dependency_range libpkgsource_dep libpkgsource "['>=4.0.0', '<5.0.0']"
 check_dependency_range libpkgcatalog_dep libpkgcatalog "['>=3.0.1', '<4.0.0']"
 check_dependency_range libpkgstate_dep libpkgstate "['>=3.1.0', '<4.0.0']"
 ! grep -F 'acquisition_adapter=disabled' "$root/meson.build" >/dev/null ||

@@ -37,14 +37,14 @@ normalize_requirements()
 }
 requires=$(sed -n 's/^Requires:[[:space:]]*//p' "$metadata" |
   tr ',' '\n' | normalize_requirements)
-expected_requires='libpkgsource >= 3.0.1
-libpkgsource < 4.0.0
+expected_requires='libpkgsource >= 4.0.0
+libpkgsource < 5.0.0
 libpkgcatalog >= 3.0.1
 libpkgcatalog < 4.0.0
 libpkgstate >= 3.1.0
 libpkgstate < 4.0.0'
 for requirement in \
-  'libpkgsource >= 3.0.1' 'libpkgsource < 4.0.0' \
+  'libpkgsource >= 4.0.0' 'libpkgsource < 5.0.0' \
   'libpkgcatalog >= 3.0.1' 'libpkgcatalog < 4.0.0' \
   'libpkgstate >= 3.1.0' 'libpkgstate < 4.0.0'
 do

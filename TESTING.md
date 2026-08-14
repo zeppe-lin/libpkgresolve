@@ -111,7 +111,7 @@ shapes (`source_snapshot`, catalog candidate/snapshot, installed package/state
 snapshot) and the resolver values that retain them. Shared qualification then
 compares `libpkgresolve.so.3` byte-for-byte at the symbol name level with the
 reviewed 134-symbol ELF manifest and requires direct
-`DT_NEEDED` edges to `libpkgsource.so.3`, `libpkgcatalog.so.3`, and
+`DT_NEEDED` edges to `libpkgsource.so.4`, `libpkgcatalog.so.3`, and
 `libpkgstate.so.4`. Generation-1/2 source/catalog or generation-1/2/3 state
 edges are refused. This matters because resolver request and selection values
 retain those authorities by value.
