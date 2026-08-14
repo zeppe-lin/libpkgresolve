@@ -24,8 +24,8 @@ name=$(sed -n 's/^Name:[[:space:]]*//p' "$metadata")
 test "$name" = libpkgresolve ||
   fail "pkg-config module name is '$name', expected 'libpkgresolve'"
 version=$(sed -n 's/^Version:[[:space:]]*//p' "$metadata")
-test "$version" = 3.0.0 ||
-  fail "pkg-config module version is '$version', expected '3.0.0'"
+test "$version" = 4.0.0 ||
+  fail "pkg-config module version is '$version', expected '4.0.0'"
 normalize_requirements()
 {
   sed \
@@ -39,13 +39,13 @@ requires=$(sed -n 's/^Requires:[[:space:]]*//p' "$metadata" |
   tr ',' '\n' | normalize_requirements)
 expected_requires='libpkgsource >= 4.0.0
 libpkgsource < 5.0.0
-libpkgcatalog >= 3.0.1
-libpkgcatalog < 4.0.0
+libpkgcatalog >= 4.0.0
+libpkgcatalog < 5.0.0
 libpkgstate >= 3.1.0
 libpkgstate < 4.0.0'
 for requirement in \
   'libpkgsource >= 4.0.0' 'libpkgsource < 5.0.0' \
-  'libpkgcatalog >= 3.0.1' 'libpkgcatalog < 4.0.0' \
+  'libpkgcatalog >= 4.0.0' 'libpkgcatalog < 5.0.0' \
   'libpkgstate >= 3.1.0' 'libpkgstate < 4.0.0'
 do
   count=$(printf '%s\n' "$requires" | grep -Fxc "$requirement" || true)

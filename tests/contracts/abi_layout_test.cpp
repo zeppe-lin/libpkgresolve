@@ -5,7 +5,7 @@
 #include <cstddef>
 
 static_assert(sizeof(void*) == 8,
-              "libpkgresolve 3 ABI layout contract requires 64-bit pointers");
+              "libpkgresolve 4 ABI layout contract requires 64-bit pointers");
 static_assert(sizeof(pkgsource::source_snapshot) == 712);
 static_assert(alignof(pkgsource::source_snapshot) == 8);
 static_assert(sizeof(pkgcatalog::catalog_candidate) == 896);

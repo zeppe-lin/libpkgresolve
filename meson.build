@@ -3,7 +3,7 @@
 project(
   'libpkgresolve',
   'cpp',
-  version: '3.0.0',
+  version: '4.0.0',
   license: 'GPL-3.0-or-later',
   meson_version: '>=1.2.0',
   default_options: [
@@ -37,7 +37,7 @@ libpkgsource_dep = dependency(
 )
 libpkgcatalog_dep = dependency(
   'libpkgcatalog',
-  version: ['>=3.0.1', '<4.0.0'],
+  version: ['>=4.0.0', '<5.0.0'],
   required: true,
   static: want_static,
   fallback: ['libpkgcatalog', 'libpkgcatalog_dep'],

@@ -98,7 +98,7 @@ The categorized sources are pinned by
 they prove rather than accumulate again in `tests/` root.
 ## Release-product qualification
 
-The 3.0 ABI generation is qualified as an installed product, not only as a
+The 4.0 ABI generation is qualified as an installed product, not only as a
 build-tree library. `ci/configure-and-test.sh` installs the exact current
 source/catalog/state authority closure into an isolated prefix, builds the
 resolver separately, installs it, and compiles `tests/installed/consumer.cpp`
@@ -109,14 +109,14 @@ private cryptographic closure is exercised.
 The x86-64 ABI layout contract also freezes the exact current by-value foreign
 shapes (`source_snapshot`, catalog candidate/snapshot, installed package/state
 snapshot) and the resolver values that retain them. Shared qualification then
-compares `libpkgresolve.so.3` byte-for-byte at the symbol name level with the
+compares `libpkgresolve.so.4` byte-for-byte at the symbol name level with the
 reviewed 134-symbol ELF manifest and requires direct
-`DT_NEEDED` edges to `libpkgsource.so.4`, `libpkgcatalog.so.3`, and
+`DT_NEEDED` edges to `libpkgsource.so.4`, `libpkgcatalog.so.4`, and
 `libpkgstate.so.4`. Generation-1/2 source/catalog or generation-1/2/3 state
 edges are refused. This matters because resolver request and selection values
 retain those authorities by value.
 
 Hosted CI executes GCC and Clang shared/static builds, an additional GCC
 release build, and GCC/Clang ASan+UBSan shared qualification. The exact
-dependency commits are pinned so a provider ABI change cannot silently change
-the meaning of the resolver qualification run.
+dependency release authorities are pinned so a provider ABI change cannot
+silently change the meaning of the resolver qualification run.

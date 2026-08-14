@@ -147,7 +147,7 @@ preserving selection, witness, closure, and identity semantics.
 
 ## Version 3 ABI boundary
 
-The current authority graph changes both alternatives retained by
+The version-3 authority graph changed both alternatives retained by
 `selection_authority`: catalog candidates are rebuilt for source generation 3,
 and installed packages are rebuilt for state generation 4. `resolution_request`
 also retains the current catalog and state snapshots by value.
@@ -159,3 +159,16 @@ layout and semantics of every active by-value alternative are part of the
 resolver ABI. Source is a direct public dependency because resolver headers and
 values name source-owned types directly rather than inheriting that dependency
 accidentally through the catalog.
+
+## Version 4 ABI boundary
+
+`libpkgsource.so.4` adds source-realization authority to source inputs and
+requires the source-retaining catalog owner to advance to
+`libpkgcatalog.so.4`. `selected_package` and `resolution_request` retain catalog
+authority by value, so the catalog carrier generation propagates through the
+resolver ABI even where enclosing object sizes happen to remain unchanged.
+
+The resolver therefore advances to `libpkgresolve.so.4`, requires
+`libpkgcatalog >= 4.0.0, < 5.0.0`, and preserves resolution policy and identity
+domains. This is an authority-carrier rebuild; it does not translate source-3
+or catalog-3 values.

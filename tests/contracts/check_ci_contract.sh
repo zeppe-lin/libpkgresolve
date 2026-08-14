@@ -12,13 +12,16 @@ for compiler in 'GCC shared' 'GCC static' 'Clang shared' 'Clang static'; do
   grep -F "$compiler" "$workflow" >/dev/null || fail "CI omits $compiler"
 done
 grep -F 'address,undefined' "$workflow" >/dev/null || fail 'CI omits ASan/UBSan qualification'
-for pin in \
-  'd5f30663a4e56c2319f301ca762741106dea1bd0' \
-  '16976cac176f576871e327d5d2f6fe9d9dfa0666' \
-  'f74df278b47b48e798c3de01c922c59b58319d13'
-do
-  grep -F "$pin" "$workflow" >/dev/null || fail "CI omits current authority pin $pin"
-done
+[ "$(grep -c 'repository: zeppe-lin/libpkgsource, ref: v4.1.0' "$workflow")" -eq 2 ] ||
+  fail 'CI does not pin libpkgsource v4.1.0 in both matrices'
+[ "$(grep -c 'repository: zeppe-lin/libpkgcatalog, ref: v4.0.0' "$workflow")" -eq 2 ] ||
+  fail 'CI does not pin libpkgcatalog v4.0.0 in both matrices'
+grep -F 'f74df278b47b48e798c3de01c922c59b58319d13' "$workflow" >/dev/null ||
+  fail 'CI omits current libpkgstate authority pin'
+! grep -F '16976cac176f576871e327d5d2f6fe9d9dfa0666' "$workflow" >/dev/null ||
+  fail 'stale catalog-3 authority pin remains'
+! grep -F 'd5f30663a4e56c2319f301ca762741106dea1bd0' "$workflow" >/dev/null ||
+  fail 'stale source authority pin remains'
 grep -F 'pkg-config --static --libs libpkgresolve' "$configure" >/dev/null ||
   fail 'static installed consumer does not use pkg-config --static'
 grep -F 'tests/installed/consumer.cpp' "$configure" >/dev/null ||

@@ -29,8 +29,8 @@ grep -F '_ZN10pkgresolve7resolveENS_18resolution_requestE' "$manifest" >/dev/nul
   fail 'resolve() is absent from reviewed ABI'
 grep -F '_ZTIN10pkgresolve5errorE' "$manifest" >/dev/null ||
   fail 'public error RTTI is absent from reviewed ABI'
-grep -F "soversion: '3'" "$root/src/meson.build" >/dev/null ||
-  fail 'SONAME generation is not 3'
+grep -F "soversion: '4'" "$root/src/meson.build" >/dev/null ||
+  fail 'SONAME generation is not 4'
 grep -F -- '--version-script=' "$root/src/meson.build" >/dev/null ||
   fail 'reviewed ELF export manifest is not linked'
 grep -F '../abi/libpkgresolve.exports' "$root/src/meson.build" >/dev/null ||

@@ -4,8 +4,8 @@
 set -eu
 root=$1
 fail() { echo "release-metadata-test: $*" >&2; exit 1; }
-grep -q "version: '3.0.0'" "$root/meson.build" || fail 'project version is not 3.0.0'
-grep -q "soversion: '3'" "$root/src/meson.build" || fail 'SONAME is not 3'
+grep -q "version: '4.0.0'" "$root/meson.build" || fail 'project version is not 3.0.0'
+grep -q "soversion: '4'" "$root/src/meson.build" || fail 'SONAME is not 4'
 for dependency in libpkgsource_dep libpkgcatalog_dep libpkgstate_dep
 do
   count=$(grep -Fxc "    $dependency," "$root/src/meson.build" || true)
@@ -27,10 +27,10 @@ check_dependency_range()
     fail "$module dependency interval is not $interval"
 }
 check_dependency_range libpkgsource_dep libpkgsource "['>=4.0.0', '<5.0.0']"
-check_dependency_range libpkgcatalog_dep libpkgcatalog "['>=3.0.1', '<4.0.0']"
+check_dependency_range libpkgcatalog_dep libpkgcatalog "['>=4.0.0', '<5.0.0']"
 check_dependency_range libpkgstate_dep libpkgstate "['>=3.1.0', '<4.0.0']"
 ! grep -F 'acquisition_adapter=disabled' "$root/meson.build" >/dev/null ||
   fail 'obsolete catalog adapter fallback option remains'
 ! grep -F 'source_adapter=disabled' "$root/meson.build" >/dev/null ||
   fail 'obsolete state adapter fallback option remains'
-grep -q 'libpkgresolve 3.0.0' "$root/HISTORY.md" || fail 'history release missing'
+grep -q 'libpkgresolve 4.0.0' "$root/HISTORY.md" || fail 'history release missing'

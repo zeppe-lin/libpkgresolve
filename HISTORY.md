@@ -1,8 +1,22 @@
 # History
 
+## libpkgresolve 4.0.0
+
+Catalog-4/source-4 authority ABI rebuild.
+
+- Rebuilt catalog-retaining request and selection values against
+  `libpkgcatalog.so.4` and advanced the resolver to `libpkgresolve.so.4`.
+- Require `libpkgsource >= 4.0.0, < 5.0.0`,
+  `libpkgcatalog >= 4.0.0, < 5.0.0`, and the existing
+  `libpkgstate >= 3.1.0, < 4.0.0` authority.
+- Preserve resolution semantics and identity domains. Source-3/catalog-3
+  carriers are not admitted or reconstructed.
+- Keep the reviewed symbol surface unchanged while advancing the provider and
+  by-value carrier ABI generation.
+
 ## libpkgresolve 3.0.0
 
-Current source/catalog/state authority ABI rebuild and qualification closure.
+Source/catalog/state authority ABI rebuild and qualification closure.
 
 - Rebuilt public request and selection values against `libpkgsource.so.3`,
   `libpkgcatalog.so.3`, and `libpkgstate.so.4`.
