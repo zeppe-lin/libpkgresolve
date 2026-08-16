@@ -26,6 +26,7 @@ done
 for path in \
   unit/identity_test.cpp \
   integration/runtime_closure_test.cpp \
+  integration/runtime_cohort_build_check_test.cpp \
   integration/installed_authority_test.cpp \
   integration/build_check_test.cpp \
   integration/lifecycle_test.cpp \

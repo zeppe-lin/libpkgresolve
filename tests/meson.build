@@ -19,6 +19,7 @@ if get_option('tests').enabled()
   foreach case : [
     ['request', 'integration/request_test.cpp'],
     ['runtime-closure', 'integration/runtime_closure_test.cpp'],
+    ['runtime-cohort-build-check', 'integration/runtime_cohort_build_check_test.cpp'],
     ['installed-authority', 'integration/installed_authority_test.cpp'],
     ['build-check', 'integration/build_check_test.cpp'],
     ['lifecycle', 'integration/lifecycle_test.cpp'],

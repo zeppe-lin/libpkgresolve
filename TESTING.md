@@ -120,3 +120,7 @@ Hosted CI executes GCC and Clang shared/static builds, an additional GCC
 release build, and GCC/Clang ASan+UBSan shared qualification. The exact
 dependency release authorities are pinned so a provider ABI change cannot
 silently change the meaning of the resolver qualification run.
+
+The `integration/runtime_cohort_build_check_test.cpp` assault combines
+reciprocal runtime closure with direct build and check inputs so cross-scope
+expansion cannot hide duplicate selections or fabricated direct authority.
